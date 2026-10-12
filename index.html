@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090b12">
+  <meta name="description" content="Aetherium — an immersive AI operations universe.">
+  <title>Aetherium | The Watcher</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #090b12;
+      --panel: #111522;
+      --line: #282e40;
+      --text: #e8eaf2;
+      --muted: #9098ae;
+      --accent: #9a83ff;
+      --glow: #6653c8;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse at 50% 0%, #252047 0%, transparent 45%),
+        var(--bg);
+      color: var(--text);
+      font-family: "Segoe UI", system-ui, sans-serif;
+    }
+
+    button, input { font: inherit; }
+
+    button {
+      cursor: pointer;
+      color: inherit;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 235px minmax(0, 1fr);
+    }
+
+    aside {
+      padding: 28px 18px;
+      background: #0b0e17dd;
+      border-right: 1px solid var(--line);
+    }
+
+    .brand {
+      font-size: 21px;
+      letter-spacing: 4px;
+      font-weight: 700;
+      margin: 0 0 5px;
+    }
+
+    .subtitle {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .section-label {
+      margin: 38px 0 12px 10px;
+      color: #777f97;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .nav {
+      display: grid;
+      gap: 7px;
+    }
+
+    .nav button {
+      text-align: left;
+      padding: 12px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      background: transparent;
+      color: #aab1c5;
+    }
+
+    .nav button:hover,
+    .nav button.active {
+      color: white;
+      background: #9180ff16;
+      border-color: #7765c844;
+    }
+
+    .nav button.active { box-shadow: inset 3px 0 var(--accent); }
+
+    .side-note {
+      margin-top: 36px;
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    main { padding: 28px clamp(18px, 4vw, 55px); min-width: 0; }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding-bottom: 22px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .status {
+      color: #b5c8b5;
+      border: 1px solid #47664b;
+      background: #263d2b44;
+      padding: 7px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      margin: 28px 0;
+      padding: clamp(24px, 5vw, 55px);
+      min-height: 310px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border: 1px solid #49406e;
+      border-radius: 14px;
+      background:
+        radial-gradient(ellipse at 78% 45%, #6952bd35, transparent 35%),
+        linear-gradient(120deg, #17172b, #101321 65%, #181429);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: 9%;
+      top: 50%;
+      width: 145px;
+      height: 145px;
+      transform: translateY(-50%);
+      border: 1px solid #a997ff77;
+      border-radius: 50%;
+      box-shadow: 0 0 0 18px #9984ff09,
+                  0 0 0 38px #9984ff08,
+                  0 0 55px #8065ff26;
+      pointer-events: none;
+    }
+
+    .hero h1 {
+      position: relative;
+      z-index: 1;
+      margin: 12px 0;
+      max-width: 570px;
+      font-size: clamp(34px, 5vw, 62px);
+      line-height: 1.05;
+      letter-spacing: -2px;
+    }
+
+    .hero p {
+      position: relative;
+      z-index: 1;
+      max-width: 480px;
+      color: #a8acc2;
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    .hero .eyebrow, .hero h1, .hero p { max-width: 70%; }
+
+    .section-heading {
+      margin: 32px 0 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-heading h2 { margin: 0; font-size: 16px; font-weight: 600; }
+    .muted { color: var(--muted); font-size: 12px; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 13px;
+    }
+
+    .card {
+      padding: 19px;
+      border: 1px solid var(--line);
+      background: #111522d9;
+      border-radius: 10px;
+      min-width: 0;
+    }
+
+    .card-icon { font-size: 23px; margin-bottom: 13px; }
+    .card h3 { font-size: 14px; margin: 0 0 9px; }
+    .card p { font-size: 12px; line-height: 1.65; color: var(--muted); margin: 0; }
+
+    .task-form {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    input {
+      min-width: 0;
+      flex: 1;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #0b0e17;
+      color: var(--text);
+    }
+
+    .primary {
+      border: 1px solid #a18dff;
+      background: #7661d6;
+      border-radius: 7px;
+      padding: 11px 16px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .primary:hover { background: #8873e9; }
+
+    .activity {
+      display: grid;
+      gap: 0;
+      margin-top: 12px;
+    }
+
+    .event {
+      padding: 13px 0;
+      border-bottom: 1px solid #22283a;
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .event span:last-child { color: var(--muted); }
+
+    .empty { color: var(--muted); font-size: 12px; padding: 10px 0; }
+
+    .footer {
+      margin-top: 35px;
+      color: #747d94;
+      font-size: 11px;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 850px) {
+      .app { grid-template-columns: 1fr; }
+      aside { border-right: 0; border-bottom: 1px solid var(--line); padding: 18px; }
+      .section-label, .side-note { display: none; }
+      .brand { font-size: 18px; }
+      .nav { display: flex; overflow-x: auto; margin-top: 18px; }
+      .nav button { white-space: nowrap; padding: 9px 12px; }
+      main { padding: 20px 16px; }
+      .grid { grid-template-columns: 1fr; }
+      .hero::after { right: -65px; opacity: .6; }
+      .hero .eyebrow, .hero h1, .hero p { max-width: 100%; }
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .hero::after { animation: pulse 7s ease-in-out infinite; }
+      @keyframes pulse {
+        0%, 100% { box-shadow: 0 0 0 18px #9984ff09, 0 0 0 38px #9984ff08, 0 0 55px #8065ff26; }
+        50% { box-shadow: 0 0 0 25px #9984ff09, 0 0 0 52px #9984ff08, 0 0 75px #8065ff35; }
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside>
+      <div class="brand">AETHERIUM</div>
+      <div class="subtitle">AI Operations Universe</div>
+
+      <div class="section-label">Command structure</div>
+      <nav class="nav" aria-label="Main navigation">
+        <button class="active" data-page="Watcher">◉ &nbsp; The Watcher</button>
+        <button data-page="Barracks">♙ &nbsp; Barracks</button>
+        <button data-page="Workshop">⚒ &nbsp; Workshop</button>
+        <button data-page="Vault">⬡ &nbsp; Vault</button>
+        <button data-page="Library">▤ &nbsp; Library</button>
+      </nav>
+
+      <div class="side-note">
+        <strong>LOCAL PROTOTYPE</strong><br>
+        The universe is taking shape. Operations recorded here are local simulations, not real AI executions.
+      </div>
+    </aside>
+
+    <main>
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">Central command / <span id="current-room">The Watcher</span></div>
+          <div class="muted" style="margin-top:7px">A world built around your operations.</div>
+        </div>
+        <div class="status">● Systems online · Local mode</div>
+      </header>
+
+      <section class="hero">
+        <div class="eyebrow">The eye that oversees all</div>
+        <h1 id="hero-title">Your universe.<br>Your command.</h1>
+        <p id="hero-copy">Every agent, project and resource belongs somewhere. The Watcher observes the system and gives you one place to direct it.</p>
+      </section>
+
+      <div class="section-heading">
+        <h2 id="section-title">Explore the universe</h2>
+        <span class="muted">01 — 05</span>
+      </div>
+
+      <section class="grid" id="room-grid">
+        <article class="card">
+          <div class="card-icon">◉</div>
+          <h3>The Watcher</h3>
+          <p>Central oversight, system status and your operational command point.</p>
+        </article>
+        <article class="card">
+          <div class="card-icon">♙</div>
+          <h3>Barracks</h3>
+          <p>Your future agent roster, responsibilities and assigned missions.</p>
+        </article>
+        <article class="card">
+          <div class="card-icon">⚒</div>
+          <h3>Workshop</h3>
+          <p>Projects, experiments and workflows under construction.</p>
+        </article>
+        <article class="card">
+          <div class="card-icon">⬡</div>
+          <h3>Vault</h3>
+          <p>A future home for resource management and permission controls. No secrets are stored in this prototype.</p>
+        </article>
+        <article class="card">
+          <div class="card-icon">▤</div>
+          <h3>Library</h3>
+          <p>Knowledge, reference material and operational documentation.</p>
+        </article>
+        <article class="card">
+          <div class="card-icon">✧</div>
+          <h3>World engine</h3>
+          <p>The first step towards interchangeable environments and a living interface.</p>
+        </article>
+      </section>
+
+      <section id="task-section">
+        <div class="section-heading">
+          <h2>Register an operation</h2>
+          <span class="muted">Local simulation</span>
+        </div>
+        <p class="muted">Record an idea or task to test the command interface. Nothing is sent to an AI service.</p>
+        <form class="task-form" id="task-form">
+          <input id="task-input" maxlength="180" placeholder="e.g. Design the first sci-fi environment" required>
+          <button class="primary" type="submit">Register</button>
+        </form>
+        <div class="section-heading">
+          <h2>Activity log</h2>
+          <span class="muted" id="event-count">0 events</span>
+        </div>
+        <div class="activity" id="activity-log" aria-live="polite">
+          <div class="empty">No operations registered yet. The first move is yours.</div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        AETHERIUM · EARLY PROTOTYPE<br>
+        Local browser prototype. Real AI agents, integrations, and 3D environments are not connected yet.
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    const descriptions = {
+      Watcher: {
+        title: "Your universe.<br>Your command.",
+        copy: "Every agent, project and resource belongs somewhere. The Watcher observes the system and gives you one place to direct it.",
+        heading: "Explore the universe"
+      },
+      Barracks: {
+        title: "Assemble your agents.",
+        copy: "A future command structure for specialised agents, each with a defined role, capabilities and responsibilities. No live agents are connected yet.",
+        heading: "Agent command structure"
+      },
+      Workshop: {
+        title: "Build what comes next.",
+        copy: "Projects, experiments and workflows will take shape here. Register an operation below to test the first local interaction.",
+        heading: "Your operational spaces"
+      },
+      Vault: {
+        title: "Protect the essential.",
+        copy: "The future home of resources, permissions and system configuration. This prototype does not store passwords, API keys or secrets.",
+        heading: "Resource architecture"
+      },
+      Library: {
+        title: "Knowledge becomes power.",
+        copy: "A future organised knowledge space for project notes, instructions, references and reusable operational knowledge.",
+        heading: "Knowledge architecture"
+      }
+    };
+
+    const rooms = [...document.querySelectorAll(".nav button")];
+
+    rooms.forEach(button => {
+      button.addEventListener("click", () => {
+        const page = button.dataset.page;
+        rooms.forEach(item => item.classList.toggle("active", item === button));
+        document.getElementById("current-room").textContent = page;
+        document.getElementById("hero-title").innerHTML = descriptions[page].title;
+        document.getElementById("hero-copy").textContent = descriptions[page].copy;
+        document.getElementById("section-title").textContent = descriptions[page].heading;
+      });
+    });
+
+    const storageKey = "aetherium-prototype-events-v1";
+    const form = document.getElementById("task-form");
+    const input = document.getElementById("task-input");
+    const log = document.getElementById("activity-log");
+    const count = document.getElementById("event-count");
+
+    let events = [];
+    try {
+      const saved = JSON.parse(localStorage.getItem(storageKey) || "[]");
+      if (Array.isArray(saved)) events = saved.slice(0, 30);
+    } catch (error) {
+      events = [];
+    }
+
+    function renderEvents() {
+      log.replaceChildren();
+      count.textContent = events.length + (events.length === 1 ? " event" : " events");
+
+      if (events.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "empty";
+        empty.textContent = "No operations registered yet. The first move is yours.";
+        log.appendChild(empty);
+        return;
+      }
+
+      events.forEach(event => {
+        const row = document.createElement("div");
+        row.className = "event";
+        const name = document.createElement("span");
+        name.textContent = event.task;
+        const time = document.createElement("span");
+        time.textContent = event.time;
+        row.append(name, time);
+        log.appendChild(row);
+      });
+    }
+
+    form.addEventListener("submit", event => {
+      event.preventDefault();
+      const task = input.value.trim();
+      if (!task) return;
+
+      events.unshift({
+        task,
+        time: new Date().toLocaleString()
+      });
+      events = events.slice(0, 30);
+
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(events));
+      } catch (error) {
+        // The current session still works if browser storage is unavailable.
+      }
+
+      renderEvents();
+      input.value = "";
+      input.focus();
+    });
+
+    renderEvents();
+  </script>
+</body>
+</html>
