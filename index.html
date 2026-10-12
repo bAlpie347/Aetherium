@@ -287,7 +287,128 @@
         50% { box-shadow: 0 0 0 25px #9984ff09, 0 0 0 52px #9984ff08, 0 0 75px #8065ff35; }
       }
     }
-  </style>
+ /* WORLD SELECTOR */
+.theme-control {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+}
+
+.theme-control select {
+  max-width: 170px;
+  padding: 9px 10px;
+  color: var(--text);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+/* Each world overrides the same shared interface. */
+body[data-theme="fantasy"] {
+  --bg: #090b12;
+  --panel: #111522;
+  --line: #49406e;
+  --text: #e8eaf2;
+  --muted: #a8acc2;
+  --accent: #b09aff;
+  --glow: #8065ff;
+}
+
+body[data-theme="scifi"] {
+  --bg: #071019;
+  --panel: #0d1b29;
+  --line: #254c65;
+  --text: #e4f6ff;
+  --muted: #91b4c8;
+  --accent: #59d8ff;
+  --glow: #168fc2;
+}
+
+body[data-theme="cyberpunk"] {
+  --bg: #100817;
+  --panel: #1c1023;
+  --line: #63305f;
+  --text: #fff0ff;
+  --muted: #c3a0c7;
+  --accent: #ff63d8;
+  --glow: #e22eac;
+}
+
+body[data-theme="minimal"] {
+  --bg: #101113;
+  --panel: #191a1d;
+  --line: #36383d;
+  --text: #f0f0f0;
+  --muted: #a5a7ad;
+  --accent: #d0d0d0;
+  --glow: #777777;
+}
+
+/* Apply the active world's palette to shared surfaces. */
+body[data-theme] {
+  background: var(--bg);
+  color: var(--text);
+}
+
+body[data-theme] aside {
+  background: var(--bg);
+  border-color: var(--line);
+}
+
+body[data-theme] .hero {
+  border-color: var(--line);
+  background:
+    radial-gradient(ellipse at 78% 45%, var(--glow), transparent 42%),
+    var(--panel);
+}
+
+body[data-theme] .card,
+body[data-theme] .side-note {
+  background: var(--panel);
+  border-color: var(--line);
+}
+
+body[data-theme] .nav button:hover,
+body[data-theme] .nav button.active {
+  background: var(--glow);
+  border-color: var(--accent);
+}
+
+body[data-theme] .nav button.active {
+  box-shadow: inset 3px 0 var(--accent);
+}
+
+body[data-theme] .eyebrow {
+  color: var(--accent);
+}
+
+body[data-theme] .primary {
+  color: #ffffff;
+  background: var(--glow);
+  border-color: var(--accent);
+}
+
+body[data-theme] input,
+body[data-theme] .theme-control select {
+  color: var(--text);
+  background: var(--panel);
+  border-color: var(--line);
+}
+
+body[data-theme] .topbar,
+body[data-theme] .event {
+  border-color: var(--line);
+}
+
+@media (max-width: 850px) {
+  .theme-control {
+    margin-top: 10px;
+  }
+} </style>
 </head>
 <body>
   <div class="app">
@@ -317,6 +438,15 @@
           <div class="muted" style="margin-top:7px">A world built around your operations.</div>
         </div>
         <div class="status">● Systems online · Local mode</div>
+        <label class="theme-control">
+  <span>WORLD</span>
+  <select id="theme-select" aria-label="Choose visual world">
+    <option value="fantasy">Dark Fantasy</option>
+    <option value="scifi">Sci-Fi</option>
+    <option value="cyberpunk">Cyberpunk</option>
+    <option value="minimal">Minimalist</option>
+  </select>
+</label>
       </header>
 
       <section class="hero">
@@ -492,6 +622,36 @@
     });
 
     renderEvents();
+    const themeSelect = document.getElementById("theme-select");
+const themeStorageKey = "aetherium-world-theme-v1";
+
+function applyTheme(theme) {
+  const validThemes = ["fantasy", "scifi", "cyberpunk", "minimal"];
+  const selected = validThemes.includes(theme) ? theme : "fantasy";
+
+  document.body.dataset.theme = selected;
+  themeSelect.value = selected;
+
+  try {
+    localStorage.setItem(themeStorageKey, selected);
+  } catch (error) {
+    // Theme switching still works for this session.
+  }
+}
+
+themeSelect.addEventListener("change", () => {
+  applyTheme(themeSelect.value);
+});
+
+let savedTheme = "fantasy";
+
+try {
+  savedTheme = localStorage.getItem(themeStorageKey) || "fantasy";
+} catch (error) {
+  // Use the default theme if storage is unavailable.
+}
+
+applyTheme(savedTheme);
   </script>
 </body>
 </html>
